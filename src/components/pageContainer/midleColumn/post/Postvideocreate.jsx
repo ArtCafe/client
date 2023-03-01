@@ -27,10 +27,10 @@ function Postvideocreate () {
           console.log(error)
       }
   }
-  const clearFormHandler = () => {
-      setText('')
-      setTitle('')
-  }
+//  const clearFormHandler = () => {
+ //     setText('')
+//      setTitle('')
+//  }
  const handleVideoChange = (e) => {
   const file = e.target.files[0];
 
