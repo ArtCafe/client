@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import pasta from "../../../../img/pasta.jpg";
+import pasta from "../../../../img/pasta.jpg";
 import 'w3-css/w3.css';
 import { useEffect } from "react";
 import { getMe } from "../../../../redux/features/auth/authSlice";
