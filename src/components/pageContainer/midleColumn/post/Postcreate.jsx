@@ -1,15 +1,15 @@
 import React, { useState,}  from "react";
 import { createPost } from '../../../../redux/features/post/postSlice';
 import {  useNavigate } from 'react-router-dom'
-import { useDispatch,  } from 'react-redux'
+import { useDispatch, useSelector,  } from 'react-redux'
 import 'w3-css/w3.css';
 
 
 function Postcreate () {
   const [title, setTitle] = useState('test')
   const [text, setText] = useState('test test')
-  const [image, setImage] = useState('')
-
+  const [image, setImage] = useState(null)
+  const {user} = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -19,6 +19,7 @@ function Postcreate () {
           data.append('title', title)
           data.append('text', text)
           data.append('image', image)
+          data.append('userId', user._id)
           dispatch(createPost(data))
           navigate('/')
       } catch (error) {
@@ -29,6 +30,21 @@ function Postcreate () {
   //    setText('')
   //    setTitle('')
  // }
+
+ const handleImageChange = (e) => {
+  const file = e.target.files[0];
+
+  const Reader = new FileReader();
+  Reader.readAsDataURL(file);
+
+  Reader.onload = () => {
+    if (Reader.readyState === 2) {
+      setImage(Reader.result);
+    }
+  };
+};
+
+
   return (
    <>
       <div className="w3-row-padding">
@@ -49,7 +65,7 @@ function Postcreate () {
        />
       <input
        className="w3-input w3-section w3-border" 
-       onChange={(e) => setImage(e.target.files[0])}
+       onChange={handleImageChange}
        type="file" 
        placeholder="file"
         />

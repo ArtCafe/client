@@ -27,7 +27,7 @@ function Comment({postId}) {
 }, [user])
 
 
- console.log(postId);
+ 
 
   const handleSubmit = () => {
       try {
@@ -55,7 +55,7 @@ function Comment({postId}) {
 
 
 
- console.log(comments);
+
   return (
   <>
    <ul className="w3-ul w3-hoverable w3-white">

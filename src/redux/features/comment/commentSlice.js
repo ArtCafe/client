@@ -38,8 +38,54 @@ export const commentSlice = createSlice({
     name: 'comment',
     initialState,
     reducers: {},
-    extraReducers: {
+    extraReducers:(builder) => {
         // Создание поста
+        builder.addCase(createComment.pending, (state, action) => {
+            return { ...state, status: "pending" };
+          });
+  
+          builder.addCase(createComment.fulfilled, (state, action) => {
+            if (action.payload) {
+            
+              return {
+                ...state,
+                token: action.payload.token,
+                comments: action.payload.comment,
+                status: "success",
+              };
+            } else return state;
+          });
+  
+          builder.addCase(createComment.rejected, (state, action) => {
+            return {
+              ...state,
+              status: "rejected",
+              error: action.payload,
+            } });
+//
+            builder.addCase(getPostComments.pending, (state, action) => {
+                return { ...state, status: "pending" };
+              });
+      
+              builder.addCase(getPostComments.fulfilled, (state, action) => {
+                if (action.payload) {
+                
+                  return {
+                    ...state,
+                    token: action.payload.token,
+                    comments: action.payload.comment,
+                    status: "success",
+                  };
+                } else return state;
+              });
+      
+              builder.addCase(getPostComments.rejected, (state, action) => {
+                return {
+                  ...state,
+                  status: "rejected",
+                  error: action.payload,
+                } });
+        /*
         [createComment.pending]: (state) => {
             state.loading = true
         },
@@ -61,7 +107,7 @@ export const commentSlice = createSlice({
         [getPostComments.rejected]: (state) => {
             state.loading = false
         },
-    },
+    */},
 })
 
 export default commentSlice.reducer

@@ -15,7 +15,7 @@ function Postemit () {
     useEffect(() => {
         dispatch(getAllPosts())
        
-    }, [dispatch,  ])
+    }, [dispatch , getAllPosts])
 
 
 if (loading) {
@@ -29,7 +29,7 @@ if (loading) {
    
 
    {posts?.map((post, idx) => (
-                <PostItem post={post} key={idx} />
+                <PostItem post={post} key={idx} loading={loading} />
             ))}
 
  

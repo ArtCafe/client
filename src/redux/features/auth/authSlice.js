@@ -1,32 +1,35 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from '../../../axios'
+import jwtDecode from "jwt-decode";
 
 const initialState = {
     user: null,
-    users: null,
+    allusers: null,
     token: null,
     isLoading: false,
     status: null,
+    loadingalluser: false,
 }
 
 export const registerUser = createAsyncThunk(
-    'auth/registerUser',
-    async ({ username, password, email }) => {
-        try {
-            const { data } = await axios.post('/auth/register', {
-                username,
-                password,
-                email,
-            })
-            if (data.token) {
-                window.localStorage.setItem('token', data.token)
-            }
-            return data
-        } catch (error) {
-            console.log(error)
+  'auth/registerUser',
+  async ({ username, password, }) => {
+      try {
+          const { data } = await axios.post('/auth/register', {
+              username,
+              password,
+             // email,
+          })
+          if (data.token) {
+            window.localStorage.setItem('token', data.token)
         }
-    },
+          return data
+      } catch (error) {
+          console.log(error)
+      }
+  },
 )
+
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async ({ username, password }) => {
@@ -35,9 +38,11 @@ export const loginUser = createAsyncThunk(
                 username,
                 password,
             })
+
             if (data.token) {
-                window.localStorage.setItem('token', data.token)
-            }
+              window.localStorage.setItem('token', data.token)
+          }
+          
             return data
         } catch (error) {
             console.log(error)
@@ -45,7 +50,7 @@ export const loginUser = createAsyncThunk(
     },
 )
 
-export const getMe = createAsyncThunk('auth/loginUser', async () => {
+export const getMee = createAsyncThunk('auth/loginUser', async () => {
     try {
         const { data } = await axios.get('/auth/me')
         return data
@@ -56,18 +61,18 @@ export const getMe = createAsyncThunk('auth/loginUser', async () => {
 
 export const updateUser = createAsyncThunk(
     'auth/updateUser',
-    async (updatedUser) => {
+    async (params) => {
         try {
-            const { data } = await axios.put('/auth/updateuser', updatedUser)  
-            if (data.token) {
-                window.localStorage.setItem('token', data.token)
-            }
+            const { data } = await axios.put('/auth/updateuser', params)  
+          
             return data
         } catch (error) {
             console.log(error)
         }
     },
 )
+
+
 export const updatePost = createAsyncThunk(
     'post/updatePost',
     async (updatedPost) => {
@@ -90,9 +95,6 @@ export const getallUser = createAsyncThunk(
             const { data } = await axios.get('/auth/all')
         
         
-            if (data.token) {
-                window.localStorage.setItem('token', data.token)
-            }
             return data
         } catch (error) {
             console.log(error)
@@ -108,90 +110,130 @@ export const authSlice = createSlice({
             state.token = null
             state.isLoading = false
             state.status = null
+
+        },
+        getMe(state, action) {
+          const token = state.token;
+    
+          if (token) {
+            const user = jwtDecode(token);
+            return {
+              ...state,
+              token,
+              name: user.name,
+              email: user.email,
+              _id: user._id,
+              isAdmin: user.isAdmin,
+              avatar: user.avatar,
+              userLoaded: true,
+            };
+          } else return { ...state, userLoaded: true };
         },
     },
-    extraReducers: {
+    extraReducers: (builder) => {
         // Register user
-        [registerUser.pending]: (state) => {
-            state.isLoading = true
-            state.status = null
-        },
-        [registerUser.fulfilled]: (state, action) => {
-            state.isLoading = false
-            state.status = action.payload.message
-            state.user = action.payload.user
-            state.token = action.payload.token
-        },
-        [registerUser.rejectWithValue]: (state, action) => {
-            state.status = action.payload.message
-            state.isLoading = false
-        },
-        // Login user
-        [loginUser.pending]: (state) => {
-            state.isLoading = true
-            state.status = null
-        },
-        [loginUser.fulfilled]: (state, action) => {
-            state.isLoading = false
-            state.status = action.payload.message
-            state.user = action.payload.user
-            state.token = action.payload.token
-        },
-        [loginUser.rejectWithValue]: (state, action) => {
-            state.status = action.payload.message
-            state.isLoading = false
-        },
-        // Проверка авторизации
-        [getMe.pending]: (state) => {
-            state.isLoading = true
-            state.status = null
-        },
-        [getMe.fulfilled]: (state, action) => {
-            state.isLoading = false
-            state.status = null
-            state.user = action.payload?.user
-            state.token = action.payload?.token
-        },
-        [getMe.rejectWithValue]: (state, action) => {
-            state.status = action.payload.message
-            state.isLoading = false
-        },
-// updater user
-        [updateUser.pending]: (state) => {
-            state.isLoading = true
-            state.status = null
-        },
-        [updateUser.fulfilled]: (state, action) => {
-            state.isLoading = false
-            state.status = action.payload.message
-            state.user = action.payload.user
-            state.token = action.payload.token
-        },
-        [updateUser.rejectWithValue]: (state, action) => {
-            state.status = action.payload.message
-            state.isLoading = false
-        },
- // Проверка авторизации
-       [getallUser.pending]: (state) => {
-         state.isLoading = true
-          state.status = null
-        },
+        builder.addCase(registerUser.pending, (state, action) => {
+          return { ...state, status: "pending" };
+        });
 
-       [getallUser.fulfilled]: (state, action) => {
-        state.isLoading = false
-        state.status = null
-        state.users = action.payload?.user
-        state.token = action.payload?.token
-         },
+        builder.addCase(registerUser.fulfilled, (state, action) => {
+          if (action.payload) {
+          
+            return {
+              ...state,
+              token: action.payload.token,
+              user: action.payload.user,
+              status: "success",
+            };
+          } else return state;
+        });
 
-        [getallUser.rejectWithValue]: (state, action) => {
-         state.status = action.payload.message
-         state.isLoading = false
-         },
+        builder.addCase(registerUser.rejected, (state, action) => {
+          return {
+            ...state,
+            status: "rejected",
+            error: action.payload,
+          };
+        });
+        builder.addCase(loginUser.pending, (state, action) => {
+          return { ...state, status: "pending" };
+        });
+
+        builder.addCase(loginUser.fulfilled, (state, action) => {
+         
+           
+            return {
+              ...state,
+              token: action.payload.token,
+              user: action.payload.user,
+              status: "success",
+            };
+          
+        });
+        builder.addCase(loginUser.rejected, (state, action) => {
+          return {
+            ...state,
+            status: "rejected",
+            error: action.payload
+          };
+        });
+
+        builder.addCase(updateUser.pending, (state, action) => {
+          return { ...state, status: "pending" };
+        });
+
+        builder.addCase(updateUser.fulfilled, (state, action) => {
+         
+           
+            return {
+              ...state,
+             
+              user: action.payload.user,
+              status: "success",
+            };
+          
+        });
+
+        builder.addCase(updateUser.rejected, (state, action) => {
+          return {
+            ...state,
+            status: "rejected",
+            error: action.payload
+          };
+        });
+
+     builder.addCase( getallUser.pending, (state, action) => {
+          return { ...state,
+            loadingalluser: true,
+            status: "pending" };
+        });
+
+        builder.addCase( getallUser.fulfilled, (state, action) => {
+         
+           
+            return {
+              ...state,
+              loadingalluser: false,
+              allusers: action.payload.user,
+              status: "success",
+            };
+          
+        });
+        
+        builder.addCase( getallUser.rejected, (state, action) => {
+          return {
+            ...state,
+            loadingalluser: true,
+            status: "rejected",
+            error: action.payload,
+          };
+        });
+
+
     },
 })
 
 export const checkIsAuth = (state) => Boolean(state.auth.token)
 
-export const { logout } = authSlice.actions
+export const { logout, getMe} = authSlice.actions
 export default authSlice.reducer

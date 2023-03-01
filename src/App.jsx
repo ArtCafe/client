@@ -25,15 +25,15 @@ function App() {
          dispatch(getMe())
      }, [dispatch])
  
-     const { status } = useSelector((state) => state.auth)
+    // const { status } = useSelector((state) => state.auth)
      const isAuth = useSelector(checkIsAuth)
      
  
  
-     useEffect(() => {
+   //  useEffect(() => {
         
       //   if (!isAuth) navigate('/login')
-     }, [status, isAuth, ])
+   //  }, [status, isAuth, ])
    
   return (
     <>
@@ -42,7 +42,7 @@ function App() {
      
 
         <Route>
-            <Route path="/" element={<Navbar /> } >
+            <Route path="/" element={ <Navbar />  } >
             <Route index element={<Home />} />
             <Route path="/:id" element={isAuth ? <Postme /> : <Register/>} />
             <Route path="foto" element={isAuth ? <Fotopostare/> : <Login />} />

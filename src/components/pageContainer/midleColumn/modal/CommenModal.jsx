@@ -22,7 +22,7 @@ const CommentModal =({postId}) => {
       },
     };
   
-    let subtitle;
+   // let subtitle;
     
     function openModal() {
       setIsOpen(true);
@@ -30,7 +30,7 @@ const CommentModal =({postId}) => {
   
     function afterOpenModal() {
       // references are now sync'd and can be accessed.
-      subtitle.style.color = '#f00';
+     // subtitle.style.color = '#f00';
     }
   
     function closeModal() {
@@ -46,7 +46,7 @@ const CommentModal =({postId}) => {
         className="w3-button w3-theme-d1 w3-margin-bottom w3-grey" 
         onClick={openModal}>comment</button>
      <Modal
-      // appElement={document.getElementById('app')}
+       appElement={document.getElementById('app')}
        isOpen={modalIsOpen}
        onAfterOpen={afterOpenModal}
        onRequestClose={closeModal}

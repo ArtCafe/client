@@ -48,7 +48,7 @@ function Postfool () {
     <h4>{post.title}</h4><br/>
     <hr className="w3-clear"/>
     <p>Have you seen this?</p>
-    <img src ={`http://localhost:5000/${post.imgUrl}`} alt="foto" style={{width:655}} className="w3-margin-bottom w3-green" />
+    <img src ={post.image.url} alt="foto" style={{width:655}} className="w3-margin-bottom w3-green" />
   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor </p>
        
         <p>{post.comments}</p>

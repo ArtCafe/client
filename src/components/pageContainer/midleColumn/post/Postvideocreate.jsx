@@ -1,15 +1,15 @@
 import React, { useState,}  from "react";
 import { createVideo } from '../../../../redux/features/post/postSlice';
 import { useNavigate } from 'react-router-dom'
-import { useDispatch,  } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import 'w3-css/w3.css';
 
 
 function Postvideocreate () {
   const [title, setTitle] = useState('test')
   const [text, setText] = useState('test test')
-  const [video, setVideo] = useState('')
-
+  const [vidUrl, setVidUrl] = useState(null)
+  const {user} = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -18,17 +18,31 @@ function Postvideocreate () {
           const data = new FormData()
           data.append('title', title)
           data.append('text', text)
-          data.append('video', video)
+          data.append('vidUrl', vidUrl)
+          data.append('userId', user._id)
           dispatch(createVideo(data))
+
           navigate('/')
       } catch (error) {
           console.log(error)
       }
   }
- // const clearFormHandler = () => {
-  //    setText('')
-  //    setTitle('')
- // }
+  const clearFormHandler = () => {
+      setText('')
+      setTitle('')
+  }
+ const handleVideoChange = (e) => {
+  const file = e.target.files[0];
+
+  const Reader = new FileReader();
+  Reader.readAsDataURL(file);
+
+  Reader.onload = () => {
+    if (Reader.readyState === 2) {
+      setVidUrl(Reader.result);
+    }
+  };
+};
   return (
    <>
       <div className="w3-row-padding">
@@ -49,8 +63,9 @@ function Postvideocreate () {
        />
       <input
        className="w3-input w3-section w3-border" 
-       onChange={(e) => setVideo(e.target.files[0])}
+       onChange={ handleVideoChange }
        type="file" 
+     
        placeholder="file"
         />
 

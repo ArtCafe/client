@@ -1,40 +1,40 @@
 import React, { useState,}  from "react";
 import { useDispatch, useSelector  } from 'react-redux'
-import {getMe, updateUser} from '../../../../redux/features/auth/authSlice'
+import {updateUser } from '../../../../redux/features/auth/authSlice'
 import 'w3-css/w3.css';
-import { useEffect } from "react";
-
+//import { useEffect } from "react";
+//import axios from '../../../../axios'
 
 function Profileupdater () {
- 
 
   const [meserie, setMeserie] = useState('')
   const [locatie, setLocatie] = useState('')
-  const [avatar, setAvatar] = useState('')
- // const [avatarPrev, setAvatarPrev] = useState(avatar);
+  const [image, setImage] = useState('')
+  const [avatarPrev, setAvatarPrev] = useState(image);
 
   const dispatch = useDispatch()
- // const navigate = useNavigate()
-    
+  //const navigate = useNavigate()
+ /*  
   useEffect(()=>{
     dispatch(getMe())
   },[dispatch])
-
+*/
   const {user} = useSelector((state) => state.auth)
-  console.log(user);
+
   const submitHandler = () => {
       try {
-          const updatedUser = new FormData()
-          updatedUser.append('locatie', locatie)
-          updatedUser.append('meserie', meserie)
-          updatedUser.append('avatar', avatar)
-          dispatch(updateUser(updatedUser))
-         // navigate('/')
-      } catch (error) {
-          console.log(error)
+          const data = new FormData()
+          data.append('locatie', locatie)
+          data.append('meserie', meserie)
+          data.append('image', image)
+          data.append('userId', user._id)
+          dispatch(updateUser(data))
+        //  navigate('/')
+     } catch (error) {
+         console.log(error)
       }
   }
-  /*
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -45,12 +45,22 @@ function Profileupdater () {
       if (Reader.readyState === 2) {
         setAvatarPrev(Reader.result);
 
-        setAvatar(Reader.result);
+        setImage(Reader.result);
       }
     };
   };
+/*
+   const updateUser =  async () => {
+        try {
+            const { resdata } = await axios.put('/auth/updateuser',data)  
+          
+            return resdata
+        } catch (error) {
+            console.log(error)
+        }
+    }
 */
-  console.log(user);
+
 
  // const clearFormHandler = () => {
    //   setMeserie('')
@@ -62,8 +72,8 @@ function Profileupdater () {
 
       <div className="w3-card w3-round w3-white">
       <p className="w3-center">
-        {/*<img src={avatarPrev}className="w3-circle w3-green" style={{height:106 , width:106}} alt="Avatar"/>
-        */}</p>
+        {<img src={avatarPrev}className="w3-circle w3-green" style={{height:106 , width:106}} alt="Avatar"/>
+}</p>
          <hr/>
       <div className="w3-container w3-padding-32" >
     <h3 className="w3-border-bottom w3-border-light-grey w3-padding-16">Postare</h3>
@@ -79,8 +89,8 @@ function Profileupdater () {
        />
       <input
        className="w3-input w3-section w3-border" 
-       //onChange={handleImageChange }
-       onChange={(e) => setAvatar(e.target.files[0])}
+       onChange={handleImageChange }
+    
        type="file" 
        placeholder="avatar"
         />

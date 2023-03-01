@@ -14,7 +14,7 @@ const {user} = useSelector((state) => state.auth)
 useEffect(() =>{
 dispatch(getMe())
 },[dispatch])
-console.log(user);
+
 if (!user){
   return (
     <>
@@ -40,7 +40,7 @@ if (!user){
       
          <h4 className="w3-center">My Profile</h4>
          <p className="w3-center">
-          <img src={`http://localhost:5000/${user.avatar}`}
+          <img src={user.avatar}
           className="w3-circle w3-green" style={{height:106 , width:106}} alt="Avatar"/></p>
          <hr/>
          <p>
