@@ -15,7 +15,7 @@ function Postemit () {
     useEffect(() => {
         dispatch(getAllPosts())
        
-    }, [dispatch , getAllPosts])
+    }, [dispatch ])
 
 
 if (loading) {
